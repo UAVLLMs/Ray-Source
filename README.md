@@ -114,39 +114,47 @@
 系统由两个**可独立部署**的部分组成，通过共享 Bearer Token 通信。
 
 ```mermaid
-flowchart LR
-    subgraph CLIENT["🖥️ web · Node.js 网关"]
-        direction TB
-        U["用户提问<br/>（可含图片 / 链接）"]
-        W["零依赖 HTTP 网关<br/>会话 · 产品记忆 · 缓存<br/>PWA 可安装移动端"]
-        U --> W
+flowchart TB
+    U(["👤 用户提问 · 可含图片 / 链接"])
+
+    subgraph WEB["🖥️ &nbsp;web &nbsp;·&nbsp; Node.js 网关"]
+        direction LR
+        W["零依赖 HTTP 网关<br/><span>会话 · 产品记忆 · 缓存</span>"]
+        P["PWA 可安装移动端<br/><span>SSE 流式渲染</span>"]
     end
 
-    subgraph BACKEND["⚙️ backend · Python / FastAPI"]
+    subgraph BACKEND["⚙️ &nbsp;backend &nbsp;·&nbsp; Python / FastAPI &nbsp;· RAG 检索生成"]
         direction TB
-        C["① 意图分类<br/>service / tech 二分类投票"]
-        V["② 视觉预路由<br/>识别产品 / 部件（有图时）"]
-        R["③ 产品路由<br/>锁定手册检索范围"]
-        S["④ 双路召回<br/>BM25 · jieba ＋ FAISS · bge-m3"]
-        F["⑤ RRF 融合 → Reranker 精排<br/>bge-reranker-v2-m3 → 父章节"]
-        E["⑥ 证据选择 → 答案-证据对齐<br/>强校验 · 防幻觉"]
-        G["⑦ 生成图文答案<br/>正文 ＋ &lt;PIC&gt; 图片锚点"]
+        C["① 意图分类<br/><span>service / tech 二分类投票</span>"]
+        V["② 视觉预路由<br/><span>识别产品 / 部件（有图时）</span>"]
+        R["③ 产品路由<br/><span>锁定手册检索范围</span>"]
+        S["④ 双路召回<br/><span>BM25 · jieba ＋ FAISS · bge-m3</span>"]
+        F["⑤ RRF 融合 → Reranker 精排<br/><span>bge-reranker-v2-m3 → 父章节</span>"]
+        E["⑥ 证据选择 → 答案对齐<br/><span>强校验 · 防幻觉</span>"]
+        G["⑦ 生成图文答案<br/><span>正文 ＋ &lt;PIC&gt; 图片锚点</span>"]
         C --> V --> R --> S --> F --> E --> G
     end
 
-    W -->|"HTTPS · Bearer Token"| C
-    G -->|"SSE 流式回传"| W
+    KB[("📚 知识库<br/><span>40 类产品手册 · 章节 · 图片 · 索引</span>")]
 
-    KB[("📚 知识库<br/>40 类产品手册<br/>章节 · 图片 · 索引")]
-    KB -.检索.-> S
-    KB -.配图溯源.-> G
+    U ==> WEB
+    WEB == "HTTPS · Bearer Token" ==> C
+    G == "SSE 流式回传" ==> WEB
+    KB -. "检索" .-> S
+    KB -. "配图溯源" .-> G
 
-    classDef client fill:#E8F4FD,stroke:#4A90D9,stroke-width:2px,color:#1B3A5B;
-    classDef backend fill:#E9F7F1,stroke:#2FA37A,stroke-width:2px,color:#12513A;
-    classDef store fill:#FFF4E0,stroke:#E0A020,stroke-width:2px,color:#6B4E10;
-    class U,W client;
+    classDef user fill:#6C63FF,stroke:#4B44CC,stroke-width:0px,color:#ffffff,font-weight:bold;
+    classDef web fill:#EAF2FE,stroke:#3B82F6,stroke-width:1.5px,color:#1E3A5F;
+    classDef backend fill:#E7F8F1,stroke:#10B981,stroke-width:1.5px,color:#0B4A37;
+    classDef store fill:#FEF6E7,stroke:#F59E0B,stroke-width:1.5px,color:#7A4E0A;
+
+    class U user;
+    class W,P web;
     class C,V,R,S,F,E,G backend;
     class KB store;
+
+    style WEB fill:#F5F9FF,stroke:#93C5FD,stroke-width:1.5px,color:#1E3A5F
+    style BACKEND fill:#F1FCF8,stroke:#6EE7B7,stroke-width:1.5px,color:#0B4A37
 ```
 
 <div align="center">
