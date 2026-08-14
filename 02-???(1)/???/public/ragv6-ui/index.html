@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Raysource</title>
+  <meta name="theme-color" content="#ffffff">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./ray-source-mark.png">
+  <link rel="icon" type="image/png" href="./ray-source-mark.png?v=20260727">
+  <link rel="stylesheet" href="./styles.css?v=image-rrf-audit-20260812f">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <img
+          class="brand-logo"
+          src="./ray-source-logo.png?v=20260727"
+          alt="睿视清源 Ray-source"
+        >
+      </div>
+
+      <button id="newChatBtn" class="new-chat" type="button">
+        <span class="new-chat-plus" aria-hidden="true">+</span>
+        <span>新咨询</span>
+      </button>
+
+      <div class="mobile-sidebar-actions" aria-label="移动端快捷操作">
+        <button id="mobileManualIndexBtn" class="mobile-sidebar-action" type="button">
+          <span aria-hidden="true">▤</span>
+          <span>进入手册参考</span>
+        </button>
+        <a id="mobileAndroidDownload" class="mobile-sidebar-action" href="/downloads/raysource-android.apk?v=1.2.0-20260807" download="Raysource-mobile-v1.2.0.apk">
+          <span aria-hidden="true">↓</span>
+          <span>下载 Android App</span>
+        </a>
+      </div>
+
+      <section class="sidebar-section conversation-section" aria-labelledby="conversationSectionTitle">
+        <div class="sidebar-section-head">
+          <span id="conversationSectionTitle">咨询记录</span>
+          <span id="contextModeBadge" class="mode-badge" title="开启后继承当前产品与部件主体">多轮上下文</span>
+        </div>
+        <div id="conversationList" class="conversation-list">
+          <button id="currentConversation" class="conversation-item active" type="button">
+            <span class="conversation-icon" aria-hidden="true">◇</span>
+            <span id="currentConversationTitle" class="conversation-title">新的咨询</span>
+            <span class="conversation-status">当前</span>
+          </button>
+        </div>
+        <div id="conversationNote" class="conversation-note">游客历史按当前网络地址安全保存</div>
+      </section>
+
+      <section class="sidebar-section quick-section" aria-labelledby="quickSectionTitle">
+        <div class="sidebar-section-head">
+          <span id="quickSectionTitle">快捷咨询</span>
+        </div>
+        <p class="quick-description">选择产品，获取常见问题</p>
+        <label class="product-search">
+          <span aria-hidden="true">⌕</span>
+          <input id="productSearch" type="search" placeholder="搜索产品" autocomplete="off">
+        </label>
+        <div id="productList" class="product-list" aria-label="快捷咨询产品列表"></div>
+        <div class="retrieval-scope">
+          <span class="scope-dot" aria-hidden="true"></span>
+          <span>仅推荐问题，回答仍从全部知识库检索</span>
+        </div>
+      </section>
+
+      <div class="account-area">
+        <button id="accountButton" class="account-button" type="button" aria-expanded="false">
+          <span id="accountAvatar" class="account-avatar">访</span>
+          <span class="account-copy">
+            <strong id="accountName">游客模式</strong>
+            <small id="accountHint">历史按网络地址保存</small>
+          </span>
+          <span class="account-chevron" aria-hidden="true">⌃</span>
+        </button>
+        <div id="accountMenu" class="account-menu" hidden>
+          <div id="accountMenuIdentity" class="account-menu-identity">当前为游客模式</div>
+          <button id="accountLoginAction" type="button">登录或注册</button>
+          <button id="accountLogoutAction" type="button" hidden>退出账号</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="chat">
+      <header class="topbar">
+        <div class="mobile-nav" aria-label="移动端导航">
+          <button
+            id="mobileSidebarToggle"
+            class="mobile-drawer-button mobile-sidebar-toggle"
+            type="button"
+            aria-label="打开咨询与产品菜单"
+            aria-controls="sidebar"
+            aria-expanded="false"
+          >
+            <span aria-hidden="true">☰</span>
+          </button>
+          <button
+            id="mobileLogbarToggle"
+            class="mobile-drawer-button mobile-logbar-toggle"
+            type="button"
+            aria-label="打开 RAG 执行明细"
+            aria-controls="logbar"
+            aria-expanded="false"
+          >
+            <span class="mobile-logbar-glyph" aria-hidden="true">✦</span>
+            <span class="mobile-logbar-label">思考</span>
+          </button>
+        </div>
+        <div class="topbar-title" id="activeProduct">Raysource</div>
+        <a id="androidAppDownload" class="ghost-button android-app-download" href="/downloads/raysource-android.apk?v=1.2.0-20260807" download="Raysource-mobile-v1.2.0.apk">下载 Android App</a>
+        <button id="manualIndexBtn" class="ghost-button manual-index-button" type="button">进入手册参考</button>
+      </header>
+
+      <section id="messages" class="messages" aria-live="polite">
+        <div class="welcome">
+          <img class="welcome-logo" src="./ray-source-mark.png?v=r-only-20260728" alt="睿视清源 R" width="96" height="96">
+          <div class="welcome-title">有什么可以帮忙的？</div>
+          <p>支持上传图片或粘贴图片链接；我会结合产品手册回答并展示相关图片。</p>
+        </div>
+      </section>
+
+      <div class="composer-wrap">
+        <div class="composer-settings" aria-label="模型与思考设置">
+          <div class="model-switcher" id="modelSwitcher">
+            <button id="modelMenuBtn" class="model-menu-button" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="modelMenu">
+              <span class="model-menu-kicker">模型</span>
+              <img id="activeModelIcon" class="model-provider-icon" src="./model-gpt-terra.svg?v=model-icons-20260730c" alt="">
+              <span id="activeModelLabel" class="model-menu-label">GPT Terra</span>
+              <span class="model-menu-chevron" aria-hidden="true"></span>
+            </button>
+            <div id="modelMenu" class="model-menu-card" role="listbox" hidden></div>
+          </div>
+          <div class="reasoning-switcher" id="reasoningSwitcher" hidden>
+            <button id="reasoningMenuBtn" class="reasoning-menu-button" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="reasoningMenu">
+              <span class="reasoning-menu-kicker">思考</span>
+              <span id="activeReasoningLabel" class="reasoning-menu-label">中等</span>
+              <span class="model-menu-chevron" aria-hidden="true"></span>
+            </button>
+            <div id="reasoningMenu" class="reasoning-menu-card" role="listbox" hidden></div>
+          </div>
+        </div>
+        <form id="composer" class="composer">
+          <div id="attachmentPreview" class="attachment-preview" hidden></div>
+          <input id="imageInput" type="file" accept="image/*" hidden>
+          <button id="uploadBtn" class="upload-button" type="button" title="上传图片" aria-label="上传图片">
+            <span class="upload-glyph" aria-hidden="true">+</span>
+          </button>
+          <div class="question-field">
+            <textarea id="questionInput" rows="1" placeholder="输入问题，可粘贴图片链接或上传图片"></textarea>
+            <button id="questionMenuBtn" class="question-menu-button" type="button" title="推荐问题" aria-label="推荐问题" aria-expanded="false" aria-controls="questionMenu">
+              <span class="chevron-down" aria-hidden="true"></span>
+            </button>
+            <div id="questionMenu" class="question-menu" hidden></div>
+          </div>
+          <button id="sendBtn" type="submit" aria-label="发送">
+            <svg class="send-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 19V5M12 5l-6 6M12 5l6 6"/>
+            </svg>
+          </button>
+        </form>
+        <div class="history-context-row">
+          <label class="history-context-option" for="historyContextToggle">
+            <input id="historyContextToggle" type="checkbox" checked>
+            <span>使用历史上下文</span>
+          </label>
+          <span id="historyContextScope" class="history-context-scope">当前产品：未选择</span>
+          <span id="historyContextCount" class="history-context-count">0轮</span>
+          <button id="clearHistoryContext" class="history-context-clear" type="button">清除当前产品记忆</button>
+        </div>
+        <div class="composer-foot">Raysource 基于产品手册检索生成，回答可能并不完美。</div>
+      </div>
+    </main>
+
+    <aside class="logbar" id="logbar">
+      <div class="logbar-head">
+        <span class="logbar-title">RAG 执行明细</span>
+        <div class="logbar-head-actions">
+          <span id="progressStage" class="logbar-stage">待命</span>
+          <button id="mobileLogbarExpand" class="mobile-logbar-action" type="button" aria-label="展开思考栏" aria-pressed="false" title="展开思考栏">↔</button>
+          <button id="mobileLogbarClose" class="mobile-logbar-action" type="button" aria-label="关闭思考栏" title="关闭思考栏">×</button>
+        </div>
+      </div>
+      <button id="mobileLogbarResize" class="mobile-logbar-resize" type="button" role="separator" aria-orientation="vertical" aria-valuemin="248" aria-valuemax="480" aria-valuenow="360" aria-label="拖动调整思考栏宽度" title="拖动调整宽度">
+        <span aria-hidden="true"></span>
+      </button>
+
+      <div id="progressPanel" class="progress-panel" aria-live="polite">
+        <div class="progress-status-card">
+          <span class="progress-spinner" aria-hidden="true"></span>
+          <span id="progressStatus" class="progress-status">等待提问</span>
+        </div>
+
+        <div class="progress-meta">
+          <div class="progress-track" aria-hidden="true">
+            <div id="progressBar" class="progress-bar"></div>
+          </div>
+          <span id="progressPercent" class="meta-percent">0%</span>
+          <span id="progressElapsed" class="meta-elapsed">0.0s</span>
+        </div>
+
+        <div class="progress-scroll">
+          <div id="progressSummary" class="progress-summary" hidden></div>
+
+          <div id="progressImages" class="progress-images" hidden>
+            <div class="section-label">相关图片</div>
+            <div id="progressThumbs" class="thumb-grid"></div>
+          </div>
+
+          <div class="section-label">可审计处理过程</div>
+          <div class="audit-note">展示检索、证据和生成阶段，不展示模型私有思维链。</div>
+          <div id="progressLog" class="progress-log" aria-label="RAG 可审计执行过程"></div>
+        </div>
+      </div>
+    </aside>
+    <button
+      id="mobileDrawerBackdrop"
+      class="mobile-drawer-backdrop"
+      type="button"
+      aria-label="关闭侧边栏"
+      hidden
+    ></button>
+  </div>
+
+  <div id="authModal" class="auth-modal" hidden>
+    <div class="auth-backdrop"></div>
+    <section class="auth-card" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+      <button id="authClose" class="auth-close" type="button" aria-label="关闭">×</button>
+      <img class="auth-logo" src="./ray-source-logo.png?v=20260727" alt="睿视清源 Ray-source">
+      <h2 id="authTitle">欢迎使用智能客服</h2>
+      <p>登录账号可跨会话保存咨询记录；游客模式不会上传历史记录。</p>
+      <div class="auth-tabs" role="tablist">
+        <button id="loginTab" class="active" type="button" role="tab">登录</button>
+        <button id="registerTab" type="button" role="tab">注册</button>
+      </div>
+      <form id="authForm" class="auth-form">
+        <label>
+          <span>账号</span>
+          <input id="authUsername" autocomplete="username" minlength="3" maxlength="32" required placeholder="3–32 位文字或数字">
+        </label>
+        <label>
+          <span>密码</span>
+          <input id="authPassword" type="password" autocomplete="current-password" minlength="8" maxlength="128" required placeholder="至少 8 位">
+        </label>
+        <div id="authError" class="auth-error" role="alert"></div>
+        <button id="authSubmit" class="auth-submit" type="submit">登录并继续</button>
+      </form>
+      <div class="auth-divider"><span>或者</span></div>
+      <button id="guestContinue" class="guest-continue" type="button">以游客模式继续</button>
+      <small class="auth-security">账号密码使用加盐哈希存储；历史上下文默认关闭并按产品隔离。</small>
+    </section>
+  </div>
+
+  <script src="./audit-contract.js?v=mobile-drawer-20260807d"></script>
+  <script src="./app.js?v=image-rrf-audit-20260812f"></script>
+  <script>
+    if ("serviceWorker" in navigator) navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+  </script>
+</body>
+</html>

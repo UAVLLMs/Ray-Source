@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Qwen">
+  <defs><linearGradient id="q" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff9b28"/><stop offset="1" stop-color="#f04b25"/></linearGradient></defs>
+  <rect width="64" height="64" rx="15" fill="url(#q)"/>
+  <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="6" d="M31 15c-9 0-16 7-16 16s7 16 16 16c5 0 9-2 12-6l7 8M31 25c4 0 7 3 7 7s-3 7-7 7-7-3-7-7 3-7 7-7Z"/>
+</svg>

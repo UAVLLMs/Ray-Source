@@ -1,0 +1,92 @@
+# ================================
+# Secrets & environment
+# ================================
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.secret
+*.key
+*.pem
+
+# ================================
+# Python
+# ================================
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ================================
+# Node.js
+# ================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ================================
+# Large data / indexes / models
+# (Excluded from the open-source repo; regenerate via the chunk pipeline)
+# ================================
+**/data/index/
+**/data/manual-images/
+**/data/manual_sections/
+**/data/chunk-admin/
+**/public/manual-images/
+**/public/downloads/
+**/public/ragv6-manual-index/
+*.npz
+*.pkl
+*.faiss
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+**/data/retrieval_chunks*.json
+**/data/section_chunks.json
+**/data/section_summaries.json
+**/data/section_aliases.json
+**/data/image_captions*.json
+**/data/catalog.json
+**/data/benchmark-answer-fallback.json
+**/data/curated_fault_fallback.json
+**/data/reference-answer-table.json
+**/data/recommended-answer-cache.json
+**/data/_product_map.json
+**/data/product_mapping_final.csv
+**/public/ragv6-ui/answers.json
+
+# ================================
+# Logs & runtime
+# ================================
+logs/
+*.log
+*.jsonl
+
+# ================================
+# Raw media (source assets kept out of git; curated assets live in docs/assets)
+# ================================
+/*.mp4
+/*.jpg
+/6507a462396a781df6f20b0a64f0f1f5.jpg
+/86f5655f1d132d175561025e77163972.jpg
+/b2cc81ffe8d3905e7b9aa20a1853c01c.jpg
+/cf73390595f64921af45f9c3641ba0b3.jpg
+
+# ================================
+# Curated README assets MUST be tracked
+!docs/assets/**
+
+# ================================
+# OS / editor
+# ================================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

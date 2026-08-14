@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="GPT">
+  <rect width="64" height="64" rx="14" fill="#101010"/>
+  <g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="5.4">
+    <path d="M32 12c7-4 16 1 16 9v7l-12 7-12-7v-7c0-4 3-7 8-9Z"/>
+    <path d="m48 28 6 10c4 7-2 16-10 16h-8l-7-12 7-12Z"/>
+    <path d="M36 54H24c-8 0-13-9-9-16l4-7h14l7 12Z"/>
+    <path d="m19 31-6-10c-4-7 2-15 10-15h8l7 12-7 12Z"/>
+    <path d="M31 6h12c8 0 13 9 9 16l-4 7H34l-7-12Z"/>
+    <path d="m16 36 4-7h14l7 12-7 12H23c-8 0-13-9-9-16Z"/>
+  </g>
+</svg>

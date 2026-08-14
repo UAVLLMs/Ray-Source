@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>睿视清源 · 客服服务监控</title>
+  <link rel="icon" type="image/png" href="/rag/ray-source-mark.png?v=20260727">
+  <link rel="stylesheet" href="./styles.css?v=observability-20260728">
+</head>
+<body>
+  <header class="monitor-head">
+    <div class="brand-wrap">
+      <img src="/rag/ray-source-logo.png?v=20260727" alt="睿视清源 Ray-source">
+      <div>
+        <h1>客服服务实时监控</h1>
+        <p>本机免登录 · 只读指标与白名单运维命令</p>
+      </div>
+    </div>
+    <div class="head-actions">
+      <span id="liveStatus" class="live-status"><i></i>正在连接</span>
+      <a href="/">返回客服</a>
+    </div>
+  </header>
+
+  <main class="dashboard">
+    <section class="kpi-grid" aria-label="核心指标">
+      <article class="kpi"><span>服务状态</span><strong id="serviceState">检查中</strong><small id="uptime">运行时间 —</small></article>
+      <article class="kpi"><span>累计请求</span><strong id="totalRequests">0</strong><small id="requestsMinute">最近一分钟 0</small></article>
+      <article class="kpi"><span>当前并发</span><strong id="activeRequests">0</strong><small id="chatRequests">客服请求 0</small></article>
+      <article class="kpi"><span>平均延迟</span><strong id="avgLatency">0 ms</strong><small id="p95Latency">P95 0 ms</small></article>
+      <article class="kpi"><span>P95 响应时间</span><strong id="p95LatencyCard">0 ms</strong><small>最近 30 天请求样本</small></article>
+      <article class="kpi"><span>P99 响应时间</span><strong id="p99LatencyCard">0 ms</strong><small>最近 30 天请求样本</small></article>
+      <article class="kpi"><span>错误率</span><strong id="errorRate">0%</strong><small id="errorRequests">错误 0</small></article>
+      <article class="kpi"><span>客服解决率</span><strong id="solutionRate">0%</strong><small id="solutionFeedback">反馈样本 0</small></article>
+      <article class="kpi quality-kpi"><span>模型失败率</span><strong id="modelFailureRate">0%</strong><small id="modelFailures">失败 0</small></article>
+      <article class="kpi quality-kpi"><span>RAG 无证据率</span><strong id="noEvidenceRate">0%</strong><small id="noEvidenceCount">无证据 0</small></article>
+      <article class="kpi quality-kpi"><span>转人工率</span><strong id="transferRate">0%</strong><small id="transferCount">转人工 0</small></article>
+      <article class="kpi"><span>内存占用</span><strong id="memoryRss">0 MB</strong><small id="heapUsed">Heap 0 MB</small></article>
+    </section>
+
+    <section class="chart-grid">
+      <article class="panel chart-panel">
+        <div class="panel-head"><div><h2>请求趋势</h2><p>每分钟请求量</p></div><span class="legend blue">请求</span></div>
+        <canvas id="requestChart" aria-label="请求趋势曲线"></canvas>
+      </article>
+      <article class="panel chart-panel">
+        <div class="panel-head"><div><h2>响应延迟</h2><p>分钟平均值、P95 与 P99</p></div><span class="legend cyan">平均 / P95 / P99</span></div>
+        <canvas id="latencyChart" aria-label="响应延迟曲线"></canvas>
+      </article>
+      <article class="panel chart-panel">
+        <div class="panel-head"><div><h2>错误趋势</h2><p>HTTP 4xx / 5xx</p></div><span class="legend red">错误</span></div>
+        <canvas id="errorChart" aria-label="错误趋势曲线"></canvas>
+      </article>
+    </section>
+
+    <section class="lower-grid">
+      <article class="panel service-panel">
+        <div class="panel-head"><div><h2>服务拓扑</h2><p>实时健康状态</p></div></div>
+        <div class="service-flow">
+          <div class="service-node"><i id="webDot"></i><strong>Web 客服</strong><span id="webDetail">Node.js</span></div>
+          <div class="flow-line"></div>
+          <div class="service-node"><i id="ragDot"></i><strong>RAG 检索服务</strong><span id="ragDetail">检查中</span></div>
+        </div>
+        <dl class="service-meta">
+          <div><dt>当前模型</dt><dd id="activeModel">—</dd></div>
+          <div><dt>监听地址</dt><dd id="listenAddress">—</dd></div>
+          <div><dt>最后更新</dt><dd id="lastUpdated">—</dd></div>
+        </dl>
+      </article>
+
+      <article class="panel console-panel">
+        <div class="panel-head">
+          <div><h2>运维控制台</h2><p>仅支持安全白名单命令，不执行系统 Shell</p></div>
+        </div>
+        <div class="command-buttons" id="commandButtons">
+          <button data-command="status">status</button>
+          <button data-command="health">health</button>
+          <button data-command="metrics">metrics</button>
+          <button data-command="quality">quality</button>
+          <button data-command="products">products</button>
+          <button data-command="alerts">alerts</button>
+          <button data-command="model">model</button>
+          <button data-command="logs">logs</button>
+          <button data-command="help">help</button>
+        </div>
+        <form id="consoleForm" class="console-form">
+          <span>&gt;</span>
+          <input id="consoleInput" autocomplete="off" spellcheck="false" placeholder="输入 help 查看可用命令">
+          <button type="submit">执行</button>
+        </form>
+        <pre id="consoleOutput" class="console-output">Ray-source monitor ready.
+输入 help 查看白名单命令。</pre>
+      </article>
+    </section>
+
+    <section class="insight-grid">
+      <article class="panel table-panel">
+        <div class="panel-head">
+          <div><h2>产品客服运营</h2><p>近 30 天咨询量、反馈解决率与质量指标</p></div>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>产品</th><th>咨询量</th><th>解决率</th><th>转人工率</th><th>模型失败</th><th>无证据</th><th>平均耗时</th></tr></thead>
+            <tbody id="productStatsBody"><tr><td colspan="7" class="empty-cell">暂无客服咨询数据</td></tr></tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="panel alert-panel">
+        <div class="panel-head">
+          <div><h2>异常告警</h2><p>邮件、企业微信和飞书通道</p></div>
+          <span class="alert-summary" id="alertSummary">检查中</span>
+        </div>
+        <div class="channel-grid" id="alertChannels"></div>
+        <div class="thresholds" id="alertThresholds"></div>
+        <div class="recent-alerts" id="recentAlerts"><div class="empty-cell">暂无告警记录</div></div>
+      </article>
+    </section>
+
+    <section class="panel trace-panel">
+      <div class="panel-head">
+        <div><h2>Request ID 全链路追踪</h2><p>前端 → Web → RAG → 模型 → 日志；仅记录运营元数据，不保存提问正文</p></div>
+        <span class="trace-hint">控制台：trace &lt;Request ID&gt;</span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>时间</th><th>Request ID</th><th>类型</th><th>产品</th><th>状态</th><th>耗时</th><th>证据</th><th>质量标记</th></tr></thead>
+          <tbody id="traceRows"><tr><td colspan="8" class="empty-cell">暂无请求记录</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel log-panel">
+      <div class="panel-head"><div><h2>近期服务日志</h2><p>自动刷新，已限制长度</p></div><button id="refreshLogs">立即刷新</button></div>
+      <pre id="serviceLogs">正在加载日志…</pre>
+    </section>
+  </main>
+
+  <script src="./app.js?v=observability-20260728"></script>
+</body>
+</html>

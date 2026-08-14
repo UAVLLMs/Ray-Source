@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Raysource Chunk Studio · 知识库运维中心</title>
+  <link rel="icon" type="image/png" href="/rag/ray-source-mark.png?v=20260727">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Noto+Sans+SC:wght@400;500;700;900&display=swap">
+  <link rel="stylesheet" href="styles.css?v=20260806-finder-fallback">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">
+      <img class="brand-logo" src="/rag/ray-source-logo.png?v=20260727" alt="睿视清源 Ray-source">
+      <span class="brand-module"><small>RAGV6</small>Chunk Studio</span>
+    </a>
+    <nav class="tabs" role="tablist" aria-label="Chunk Studio 工作区">
+      <button class="tab active" data-tab="library"><span>01</span>Chunk 数据库</button>
+      <button class="tab" data-tab="ingest"><span>02</span>新手册切分</button>
+      <button class="tab" data-tab="operations"><span>03</span>任务与回滚</button>
+    </nav>
+    <div class="top-actions">
+      <span class="connection" id="connection"><i></i>正在连接</span>
+      <button class="button ghost compact-button" id="refresh-all" title="刷新数据库状态">刷新</button>
+      <button class="button primary compact-button" id="rebuild-index">重建并热切换索引</button>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <section class="workspace-intro">
+      <div>
+        <p class="eyebrow">RAGV6 · Knowledge operations</p>
+        <h1>Chunk Studio</h1>
+        <p>管理手册、审查切片，并把经过验证的检索资产安全发布到生产索引。</p>
+      </div>
+      <div class="hero-state" id="hero-state">
+        <span>索引状态</span>
+        <strong>读取中</strong>
+        <small>正在核对数据文件与向量索引时间</small>
+      </div>
+    </section>
+
+    <section class="metric-grid" id="global-metrics">
+      <article class="metric skeleton"></article>
+      <article class="metric skeleton"></article>
+      <article class="metric skeleton"></article>
+      <article class="metric skeleton"></article>
+    </section>
+
+    <section class="view active" id="library-view">
+      <aside class="manual-panel card">
+        <div class="panel-heading">
+          <div><p class="eyebrow">Manual library</p><h2>手册库</h2></div>
+          <span class="counter" id="manual-count">0</span>
+        </div>
+        <label class="search-field">
+          <span>搜索</span>
+          <input id="manual-search" placeholder="产品名、语言或索引状态">
+        </label>
+        <div class="manual-list" id="manual-list">
+          <div class="empty">正在读取手册目录…</div>
+        </div>
+      </aside>
+
+      <section class="library-workspace">
+        <article class="card detail-card">
+          <div class="detail-head">
+            <div>
+              <p class="eyebrow">Selected manual</p>
+              <h2 id="manual-title">选择一本手册</h2>
+              <p id="manual-subtitle">查看父章节、检索 Chunk、图片绑定与质量字段。</p>
+            </div>
+            <span class="status-pill neutral" id="manual-status">未选择</span>
+          </div>
+          <div class="manual-metrics" id="manual-metrics"></div>
+          <div class="toolbar">
+            <div class="segmented" id="row-mode">
+              <button class="selected" data-mode="sections">父章节</button>
+              <button data-mode="retrieval">检索 Chunk</button>
+            </div>
+            <label class="search-field compact">
+              <span>筛选内容</span>
+              <input id="chunk-search" placeholder="标题、正文、标签或 ID">
+            </label>
+          </div>
+          <div class="chunk-workspace">
+            <div class="chunk-list" id="chunk-list">
+              <div class="empty">从左侧选择一本手册。</div>
+            </div>
+            <article class="chunk-detail" id="chunk-detail">
+              <div class="empty">选择一个数据块查看完整结构。</div>
+            </article>
+          </div>
+        </article>
+
+        <article class="card search-test">
+          <div>
+            <p class="eyebrow">Retrieval smoke test</p>
+            <h3>检索冒烟测试</h3>
+            <p>直接验证当前已发布索引，不调用答案生成模型。</p>
+          </div>
+          <div class="search-test-form">
+            <input id="test-question" placeholder="例如：如何清洁空气炸锅的炸篮？">
+            <button class="button" id="run-search-test">测试当前手册</button>
+          </div>
+          <div class="search-results" id="search-results"></div>
+        </article>
+      </section>
+    </section>
+
+    <section class="view" id="ingest-view">
+      <section class="ingest-layout">
+        <article class="card source-card">
+          <div class="panel-heading">
+            <div><p class="eyebrow">Step 1 · Source</p><h2>导入手册</h2></div>
+            <span class="status-pill neutral" id="source-status">尚未载入</span>
+          </div>
+          <label class="field">
+            <span>产品/手册规范名称</span>
+            <input id="import-name" maxlength="96" placeholder="例如：智能咖啡机手册">
+            <small>该名称会成为 catalog、产品路由和检索结果中的 product 字段。</small>
+          </label>
+          <label class="drop-zone" id="drop-zone">
+            <input type="file" id="file-input" accept=".md,.markdown,.txt,.docx,.pdf,text/markdown,text/plain,application/pdf">
+            <strong>拖入或选择手册</strong>
+            <span>支持 Markdown、TXT、DOCX、PDF，单文件不超过 25MB</span>
+            <small id="file-name">也可以直接在下方粘贴 Markdown/纯文本</small>
+          </label>
+          <label class="field">
+            <span>源正文</span>
+            <textarea id="source-text" spellcheck="false" placeholder="# 产品名称&#10;&#10;# 安全须知&#10;&#10;## 安装准备&#10;&#10;在这里粘贴手册正文。DOCX/PDF 上传后由后端提取文本。"></textarea>
+          </label>
+        </article>
+
+        <article class="card settings-card">
+          <div class="panel-heading">
+            <div><p class="eyebrow">Step 2 · Policy</p><h2>智能切分策略</h2></div>
+          </div>
+          <div class="option-grid">
+            <label class="field"><span>目标字符数</span><input id="target-size" type="number" min="240" max="2200" value="720"><small>大多数检索块尽量靠近该长度</small></label>
+            <label class="field"><span>最短字符数</span><input id="min-size" type="number" min="60" max="1000" value="160"><small>短块会被合并或标记</small></label>
+            <label class="field"><span>最长字符数</span><input id="max-size" type="number" min="240" max="4000" value="1100"><small>不可突破的硬上限</small></label>
+            <label class="field"><span>重叠字符数</span><input id="overlap-size" type="number" min="0" max="400" value="90"><small>只复用完整句子或步骤</small></label>
+          </div>
+          <label class="switch-row"><span><strong>推断纯文本标题</strong><small>识别短标题、编号章节和常见说明书标题词</small></span><input id="infer-headings" type="checkbox" checked></label>
+          <label class="switch-row"><span><strong>过滤目录页</strong><small>避免目录条目污染正式召回</small></span><input id="drop-toc" type="checkbox" checked></label>
+          <div class="policy-note">
+            <strong>结构保护</strong>
+            <p>程序优先保护 Markdown 标题树、完整步骤、Warning/Caution/Note、图片锚点和父章节。超长章节才会生成带完整句子重叠的语义窗口。</p>
+          </div>
+          <button class="button primary full" id="preview-split">生成切分与质量预览</button>
+        </article>
+      </section>
+
+      <section class="card preview-card">
+        <div class="preview-head">
+          <div>
+            <p class="eyebrow">Step 3 · Review & publish</p>
+            <h2 id="preview-title">等待切分预览</h2>
+            <p id="preview-description">预览不会修改正式数据库。</p>
+          </div>
+          <div class="publish-actions">
+            <label class="inline-check"><input id="replace-existing" type="checkbox">覆盖同名手册</label>
+            <label class="inline-check"><input id="rebuild-after-publish" type="checkbox" checked>发布后重建索引</label>
+            <button class="button primary" id="publish-manual" disabled>发布到 Chunk 数据库</button>
+          </div>
+        </div>
+        <div class="quality-banner neutral" id="quality-banner">
+          <strong>未检查</strong><span>生成预览后显示错误、警告和可发布状态。</span>
+        </div>
+        <div class="preview-metrics" id="preview-metrics"></div>
+        <div class="toolbar preview-toolbar">
+          <div class="segmented" id="preview-mode">
+            <button class="selected" data-mode="sections">父章节预览</button>
+            <button data-mode="retrieval">检索 Chunk 预览</button>
+          </div>
+          <label class="search-field compact">
+            <span>筛选预览</span>
+            <input id="preview-search" placeholder="标题、正文、标签">
+          </label>
+        </div>
+        <div class="preview-list" id="preview-list">
+          <div class="empty">上传或粘贴一本手册，然后生成预览。</div>
+        </div>
+      </section>
+    </section>
+
+    <section class="view" id="operations-view">
+      <div class="operations-grid">
+        <article class="card">
+          <div class="panel-heading">
+            <div><p class="eyebrow">Background jobs</p><h2>索引任务</h2></div>
+            <button class="button" id="refresh-jobs">刷新状态</button>
+          </div>
+          <div class="job-list" id="job-list"><div class="empty">当前没有运行中的任务。</div></div>
+        </article>
+        <article class="card">
+          <div class="panel-heading">
+            <div><p class="eyebrow">Safe rollback</p><h2>发布备份</h2></div>
+            <button class="button" id="refresh-backups">刷新备份</button>
+          </div>
+          <p class="section-copy">每次发布前会备份 catalog、父章节、检索块、摘要、源文档与手册章节文件。回滚后必须重建索引。</p>
+          <div class="backup-list" id="backup-list"><div class="empty">正在读取备份…</div></div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal" id="confirm-modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <p class="eyebrow">Confirm operation</p>
+      <h2 id="modal-title">确认操作</h2>
+      <p id="modal-message"></p>
+      <div class="modal-actions">
+        <button class="button" id="modal-cancel">取消</button>
+        <button class="button danger" id="modal-confirm">确认</button>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="app.js?v=20260806-finder-fallback"></script>
+</body>
+</html>
