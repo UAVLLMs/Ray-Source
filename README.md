@@ -1,219 +1,233 @@
 <div align="center">
 
-<img src="docs/assets/logo.png" alt="Ray-Source Logo" height="96" />
+<img src="docs/assets/logo.png" alt="Ray-Source" height="88" />
 
 # Ray-Source · 睿视清源
 
-### 多模态检索增强（RAG）智能产品客服系统
+**多模态检索增强（RAG）智能产品客服系统**
 
-*Multimodal Retrieval-Augmented Generation for Grounded Product Support*
+<em>Multimodal Retrieval-Augmented Generation for Grounded Product Support</em>
 
-<p>
-  <img alt="Award" src="https://img.shields.io/badge/中国研究生电子设计大赛-国家级一等奖-e63946?style=for-the-badge&logo=trophy&logoColor=white" />
-  <img alt="Prize" src="https://img.shields.io/badge/企业专项奖-¥40,000-f4a261?style=for-the-badge&logo=cashapp&logoColor=white" />
-</p>
+<br/>
 
-<p>
-  <img alt="Python" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white" />
-  <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white" />
-  <img alt="Node" src="https://img.shields.io/badge/Node.js-18%2B-339933?logo=nodedotjs&logoColor=white" />
-  <img alt="FAISS" src="https://img.shields.io/badge/FAISS-Dense%20Retrieval-4B8BBE" />
-  <img alt="BM25" src="https://img.shields.io/badge/BM25-Sparse%20Retrieval-7B68EE" />
-  <img alt="PWA" src="https://img.shields.io/badge/PWA-Installable-5A0FC8?logo=pwa&logoColor=white" />
-  <img alt="License" src="https://img.shields.io/badge/License-MIT-green" />
-</p>
+[![Award](https://img.shields.io/badge/中国研究生电子设计大赛-国家级一等奖-e63946?style=for-the-badge)](#-荣誉)
+[![Prize](https://img.shields.io/badge/企业专项奖-￥40,000-f4a261?style=for-the-badge)](#-荣誉)
 
-<p>
-  <b>面向真实产品说明书的图文问答 · 稀疏+稠密双路召回 · 证据对齐防幻觉 · 全链路 RAG 可视化审计</b>
-</p>
+<br/>
 
-<img src="docs/assets/demo.gif" alt="Ray-Source Demo" width="90%" />
+![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=nodedotjs&logoColor=white)
+![FAISS](https://img.shields.io/badge/FAISS-Dense-4B8BBE)
+![BM25](https://img.shields.io/badge/BM25-Sparse-7B68EE)
+![PWA](https://img.shields.io/badge/PWA-Installable-5A0FC8?logo=pwa&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-3DA639)
+
+<br/>
+
+<samp>图文问答　·　稀疏＋稠密双路召回　·　证据对齐防幻觉　·　全链路 RAG 可视化审计</samp>
+
+<br/>
+
+<img src="docs/assets/demo.gif" alt="Ray-Source Demo" width="88%" />
+
+</div>
+
+<br/>
+
+<div align="center">
+
+[✨ 简介](#-简介) &nbsp;·&nbsp; [🖼️ 预览](#-界面预览) &nbsp;·&nbsp; [🏗️ 架构](#-系统架构) &nbsp;·&nbsp; [🧩 技术栈](#-技术栈) &nbsp;·&nbsp; [🚀 快速开始](#-快速开始) &nbsp;·&nbsp; [📡 API](#-api-概览) &nbsp;·&nbsp; [🛠️ 知识运维](#-知识块管理) &nbsp;·&nbsp; [📁 结构](#-目录结构)
 
 </div>
 
 ---
 
-## ✨ 项目简介
+## ✨ 简介
 
-**Ray-Source（睿视清源）** 是一套可独立部署的**多模态智能产品客服系统**。它以真实的产品说明书（涵盖 **40 类家电 / 数码 / 户外设备**）为知识底座，将用户的**自然语言问题 + 上传图片**转化为**有据可依（grounded）**的图文答案：答案中的每一段结论都可追溯到手册原文与手册配图，右侧执行明细面板实时展示完整的 RAG 检索链路。
+**Ray-Source（睿视清源）** 是一套可独立部署的多模态智能产品客服系统。它以真实产品说明书（覆盖 **40 类**家电 / 数码 / 户外设备）为知识底座，将用户的**自然语言问题 + 上传图片**转化为**有据可依（grounded）**的图文答案 —— 每一段结论都可追溯到手册原文与配图，界面右侧实时展示完整的 RAG 检索链路。
 
-> 🏆 本项目荣获 **中国研究生电子设计大赛（GEDC）国家级一等奖**，并获 **企业专项奖金 ¥40,000**。
+> 🏆 本项目荣获 **中国研究生电子设计大赛（GEDC）国家级一等奖**，并获 **企业专项奖金 ￥40,000**。
 
-### 为什么是它
-
-- **不编造**：技术题答案强制经过*证据选择*与*答案—证据对齐*校验，抑制大模型幻觉。
-- **看得见**：网页端右侧「RAG 执行明细」逐步展示预检索、召回、重排、证据置信度等全过程。
-- **多模态**：支持上传图片、粘贴图片链接，先做视觉预路由识别产品与部件，再由手册检索证据验证结论。
-- **可运维**：内置知识块可视化管理后台，支持一键导入 / 切分 / 质量预检 / 事务发布 / 后台重建索引 / 热切换 / 回滚。
-- **能落地**：前后端完全解耦、可独立部署；网页端零框架依赖；移动端为同源可安装 PWA。
+<table>
+<tr>
+<td width="25%" align="center"><b>🛡️ 不编造</b><br/><sub>证据选择 + 答案对齐<br/>强校验抑制幻觉</sub></td>
+<td width="25%" align="center"><b>🔍 看得见</b><br/><sub>右侧执行明细逐步<br/>展示完整检索链路</sub></td>
+<td width="25%" align="center"><b>🖼️ 多模态</b><br/><sub>图片 / 链接输入<br/>视觉预路由 + 检索验证</sub></td>
+<td width="25%" align="center"><b>⚙️ 可运维</b><br/><sub>可视化知识块管理<br/>一键切分发布热切换</sub></td>
+</tr>
+</table>
 
 ---
 
 ## 🖼️ 界面预览
 
-### 桌面网页端 · 图文问答 + RAG 全链路审计
-<div align="center">
-  <img src="docs/assets/web-desktop.jpg" alt="Desktop Web UI" width="92%" />
-</div>
-
-左侧为产品导航与会话历史，中部为带手册配图与 `<PIC>` 锚点的图文答案，右侧「RAG 执行明细」实时展示检索、重排与证据溯源。
-
-### 关键帧速览（自演示视频抽取）
+### 桌面网页端 · 图文问答 ＋ RAG 全链路审计
 
 <div align="center">
-
-| 实时检索与执行明细 | 全库手册目录树（中英对照） | 图文步骤问答 |
-|:---:|:---:|:---:|
-| <img src="docs/assets/frames/frame-01.jpg" width="270"/> | <img src="docs/assets/frames/frame-02.jpg" width="270"/> | <img src="docs/assets/frames/frame-03.jpg" width="270"/> |
-| **图片链接输入与理解** | **多模态部件识别** | **证据溯源与置信度** |
-| <img src="docs/assets/frames/frame-04.jpg" width="270"/> | <img src="docs/assets/frames/frame-05.jpg" width="270"/> | <img src="docs/assets/frames/frame-06.jpg" width="270"/> |
-
+  <img src="docs/assets/web-desktop.jpg" alt="Desktop Web UI" width="90%" />
+  <br/>
+  <sub>左侧产品导航与会话历史　|　中部带手册配图的图文答案　|　右侧「RAG 执行明细」实时溯源</sub>
 </div>
+
+<br/>
+
+### 核心能力速览
+
+<div align="center">
+<table>
+  <tr>
+    <td align="center" width="33%"><img src="docs/assets/frames/frame-01.jpg" width="100%"/><br/><sub><b>实时检索 · 执行明细</b></sub></td>
+    <td align="center" width="33%"><img src="docs/assets/frames/frame-02.jpg" width="100%"/><br/><sub><b>全库手册目录树（中英对照）</b></sub></td>
+    <td align="center" width="33%"><img src="docs/assets/frames/frame-03.jpg" width="100%"/><br/><sub><b>图文步骤问答</b></sub></td>
+  </tr>
+  <tr>
+    <td align="center" width="33%"><img src="docs/assets/frames/frame-04.jpg" width="100%"/><br/><sub><b>图片链接输入与理解</b></sub></td>
+    <td align="center" width="33%"><img src="docs/assets/frames/frame-05.jpg" width="100%"/><br/><sub><b>多模态部件识别</b></sub></td>
+    <td align="center" width="33%"><img src="docs/assets/frames/frame-06.jpg" width="100%"/><br/><sub><b>证据溯源与置信度</b></sub></td>
+  </tr>
+</table>
+</div>
+
+<br/>
 
 ### 移动端 PWA · 图文客服
 
 <div align="center">
-  <img src="docs/assets/mobile-ac.jpg" alt="Mobile - Air Conditioner" width="30%" />
-  &nbsp;&nbsp;
-  <img src="docs/assets/mobile-purifier.jpg" alt="Mobile - Air Purifier" width="30%" />
+<table>
+  <tr>
+    <td align="center" width="50%"><img src="docs/assets/mobile-1.jpg" width="240"/></td>
+    <td align="center" width="50%"><img src="docs/assets/mobile-2.jpg" width="240"/></td>
+  </tr>
+  <tr>
+    <td align="center"><sub><b>空调遥控器 · 电池安装图解</b></sub></td>
+    <td align="center"><sub><b>空气净化器 · 滤网清洁图解</b></sub></td>
+  </tr>
+</table>
+<sub>同源可安装 PWA，与桌面端共用问答、图片上传、历史会话与手册图片接口</sub>
 </div>
 
 ---
 
 ## 🏗️ 系统架构
 
+系统由两个**可独立部署**的部分组成，通过共享 Bearer Token 通信。
+
 ```text
-┌───────────────────────────┐          ┌────────────────────────────────────────────┐
-│        网页端 (Node.js)     │  HTTPS   │              召回端 (Python / FastAPI)        │
-│  ───────────────────────  │  Bearer  │  ──────────────────────────────────────────  │
-│  · 零依赖 HTTP 网关         │ ───────► │  意图分类 (service / tech 二分类投票)          │
-│  · 会话 / 产品记忆          │  Token   │        │                                      │
-│  · 推荐答案缓存             │          │        ▼   有图 → 视觉预路由 (产品/部件识别)     │
-│  · SSE 流式转发             │          │  产品路由 (锁定手册范围)                        │
-│  · PWA 可安装移动端         │          │        │                                      │
-│  · 知识块管理后台           │ ◄─────── │        ▼                                      │
-│                            │   SSE    │  双路召回  BM25(jieba)  +  FAISS(bge-m3)       │
-└───────────────────────────┘          │        │        RRF 融合                        │
-                                        │        ▼                                      │
-                                        │  Reranker 精排 (bge-reranker-v2-m3) → 父章节   │
-                                        │        │                                      │
-                                        │        ▼                                      │
-                                        │  证据选择 → 答案-证据对齐校验 (防幻觉)          │
-                                        │        │                                      │
-                                        │        ▼                                      │
-                                        │  生成答案 + <PIC> 图片锚点 + 多语言一致性守卫    │
-                                        └────────────────────────────────────────────┘
+┌────────────────────────────┐          ┌──────────────────────────────────────────────┐
+│         web (Node.js)      │  HTTPS   │                backend (Python / FastAPI)      │
+│  ────────────────────────  │  Bearer  │  ────────────────────────────────────────────  │
+│  · 零依赖 HTTP 网关          │ ───────► │  ① 意图分类（service / tech 二分类投票）         │
+│  · 会话 / 产品记忆           │  Token   │           │                                      │
+│  · 推荐答案缓存              │          │           ▼  有图 → 视觉预路由（识别产品 / 部件） │
+│  · SSE 流式转发             │          │  ② 产品路由（锁定手册检索范围）                    │
+│  · 知识块管理后台           │          │           │                                      │
+│  · PWA 可安装移动端         │ ◄─────── │           ▼                                      │
+│                            │   SSE    │  ③ 双路召回  BM25(jieba) ＋ FAISS(bge-m3)        │
+└────────────────────────────┘          │           │         ↓ RRF 融合                     │
+                                         │           ▼                                      │
+                                         │  ④ Reranker 精排（bge-reranker-v2-m3）→ 父章节   │
+                                         │           │                                      │
+                                         │           ▼                                      │
+                                         │  ⑤ 证据选择 → 答案-证据对齐校验（防幻觉）          │
+                                         │           │                                      │
+                                         │           ▼                                      │
+                                         │  ⑥ 生成答案 ＋ <PIC> 图片锚点 ＋ 多语言一致性守卫 │
+                                         └──────────────────────────────────────────────┘
 ```
 
-### 问答数据流
+<div align="center">
 
-```
-用户提问 (+可选图片/图片链接)
-   → 意图分类（客服题 service / 技术题 tech）
-   → 若含图片：视觉预路由（识别产品、可见部件、检索意图）
-   → 产品路由（将检索边界锁定到对应手册）
-   → BM25 稀疏召回 + FAISS 稠密召回 → RRF 融合
-   → Reranker 精排 → 命中 chunk 展开为完整父章节
-   → 证据选择 / 答案-证据对齐校验（抑制编造）
-   → 生成最终答案：正文 + <PIC> 图片锚点 + 末尾图片数组
-```
+**问答数据流**
+
+`用户提问(+图片)` → `意图分类` → `视觉预路由` → `产品路由` → `BM25＋FAISS 召回` → `RRF 融合` → `Reranker 精排` → `证据对齐校验` → `生成图文答案`
+
+</div>
 
 **技术题 vs 客服题**
-| | 客服题 (service) | 技术题 (tech) |
-|---|---|---|
-| 返回 | 纯文本短答 | 正文 + `<PIC>` 图片锚点 + 图片数组 |
-| 校验 | 轻量 | 证据选择 + 答案-证据对齐强校验 |
-| 图片 | 一般无 | 引用手册原图 |
+
+| 维度 | 客服题 `service` | 技术题 `tech` |
+| :--- | :--- | :--- |
+| 返回形式 | 纯文本短答 | 正文 ＋ `<PIC>` 图片锚点 ＋ 图片数组 |
+| 证据校验 | 轻量 | 证据选择 ＋ 答案-证据对齐**强校验** |
+| 手册配图 | 一般无 | 引用手册原图溯源 |
 
 ---
 
 ## 🧩 技术栈
 
-| 层次 | 技术 |
-|---|---|
-| **召回端** | Python 3.11+ · FastAPI · Uvicorn · Pydantic v2 |
-| **稀疏检索** | `jieba` 分词 + `rank-bm25` (BM25Okapi) |
-| **稠密检索** | `BAAI/bge-m3` Embedding + `FAISS` (IndexFlatIP) |
-| **重排** | `BAAI/bge-reranker-v2-m3`（召回后对 query-doc 对打分） |
-| **融合** | RRF（Reciprocal Rank Fusion） |
-| **生成** | OpenAI 兼容 Responses API（可替换任意大模型端点） |
-| **多模态** | 视觉预路由 + DINOv2 视觉相似度图片索引 |
-| **网页端** | Node.js 18+ · 零框架（内置 `node:sqlite`）· 可选 Redis |
-| **移动端** | PWA（manifest + Service Worker，可安装到主屏） |
-| **缓存** | 进程内 LRU + 可选 Redis 跨实例检索缓存 |
+| 层次 | 技术选型 |
+| :--- | :--- |
+| **后端服务** | Python 3.11+ · FastAPI · Uvicorn · Pydantic v2 |
+| **稀疏检索** | `jieba` 分词 ＋ `rank-bm25`（BM25Okapi） |
+| **稠密检索** | `BAAI/bge-m3` Embedding ＋ `FAISS`（IndexFlatIP） |
+| **重排精排** | `BAAI/bge-reranker-v2-m3`（召回后对 query-doc 打分） |
+| **结果融合** | RRF（Reciprocal Rank Fusion） |
+| **答案生成** | OpenAI 兼容 Responses API（可替换任意大模型端点） |
+| **多模态** | 视觉预路由 ＋ DINOv2 视觉相似度图片索引 |
+| **网关前端** | Node.js 18+ · 零框架（内置 `node:sqlite`）· 可选 Redis |
+| **移动端** | PWA（Manifest ＋ Service Worker，可安装到主屏） |
+| **缓存** | 进程内 LRU ＋ 可选 Redis 跨实例检索缓存 |
 
 ---
 
 ## 🚀 快速开始
 
-> 系统由两个可独立部署的部分组成：**召回端（Python）** 与 **网页端（Node.js）**。请先启动召回端，再启动网页端。
+> 请先启动 `backend`（召回端），再启动 `web`（网页端）。
 
-### 1. 召回端（Python）
+### 1 · 启动后端 `backend`
 
 ```bash
-cd 01-召回端*/召回端
+cd backend
 
-# 创建虚拟环境
 python -m venv .venv
 # Windows PowerShell
 .\.venv\Scripts\Activate.ps1
-# Linux / macOS
-# source .venv/bin/activate
+# Linux / macOS:  source .venv/bin/activate
 
 pip install -r requirements.txt
-
-# 配置环境变量：复制示例并填入你自己的 Provider Key / Token
-cp .env.example .env      # Windows: copy .env.example .env
+cp .env.example .env          # Windows: copy .env.example .env
 ```
 
-在 `.env` 中至少填写：`KAFU_API_TOKEN`（自定义随机长串）、生成模型 Provider、Embedding Provider；启用重排则填写 Rerank Provider。
+在 `.env` 中至少填写：`KAFU_API_TOKEN`（自定义随机长串）、生成模型 Provider、Embedding Provider。
 
 ```bash
-# 启动（示例端口 8014）
 python -m uvicorn api_server:app --host 127.0.0.1 --port 8014 --workers 1
-# 或使用脚本
-./start.ps1 -ListenHost 0.0.0.0 -Port 8014
+
+curl http://127.0.0.1:8014/health      # 期望返回 status: ok
 ```
 
-健康检查：
+### 2 · 启动前端 `web`
 
 ```bash
-curl http://127.0.0.1:8014/health   # 期望返回 status: ok
+cd web
+cp .env.example .env          # Windows: copy .env.example .env
 ```
 
-### 2. 网页端（Node.js）
-
-```bash
-cd 02-网页端*/网页端
-
-cp .env.example .env      # Windows: copy .env.example .env
-```
-
-在 `.env` 中设置：`RAGV6_API_ORIGIN` / `RAGV6_CHAT_ORIGIN` 指向召回端地址；**`RAGV6_API_TOKEN` 必须与召回端 `KAFU_API_TOKEN` 完全一致**。
+在 `.env` 中设置 `RAGV6_API_ORIGIN` / `RAGV6_CHAT_ORIGIN` 指向后端地址；
+**`RAGV6_API_TOKEN` 必须与后端 `KAFU_API_TOKEN` 完全一致。**
 
 ```bash
 npm ci
-./start.ps1               # 或 node server.js
+node server.js
 ```
 
-打开浏览器访问 **http://127.0.0.1:3011**，先发送「你好」验证客服短答，再发送一条产品问题，右侧应实时出现检索审计。
+打开 **http://127.0.0.1:3011** —— 先发送「你好」验证客服短答，再发送一条产品问题，右侧应实时出现检索审计。
 
 ---
 
 ## 📡 API 概览
 
-召回端对外提供 REST / SSE 接口（均需 `Authorization: Bearer <KAFU_API_TOKEN>`）：
+后端提供 REST / SSE 接口，均需请求头 `Authorization: Bearer <KAFU_API_TOKEN>`。
 
 | 方法 | 路径 | 说明 |
-|---|---|---|
+| :--- | :--- | :--- |
 | `GET`  | `/health` | 健康检查与引擎状态 |
 | `POST` | `/chat` | 一次性问答（`stream:false` 返回完整 JSON） |
 | `POST` | `/chat/stream` | SSE 流式问答（`status` / `delta` / `done` 事件） |
 | `POST` | `/retrieve` | 只做检索、不生成答案 |
 | `POST` | `/translate` | 文本翻译 |
 | `*`    | `/admin/chunks/*` | 知识块管理（导入 / 预览 / 发布 / 重建 / 回滚） |
-
-请求示例：
 
 ```bash
 curl -sS -X POST http://127.0.0.1:8014/chat \
@@ -222,70 +236,67 @@ curl -sS -X POST http://127.0.0.1:8014/chat \
   -d '{"question": "椅子的扶手使用一段时间后为什么会松动？", "session_id": "demo"}'
 ```
 
-> 更多细节见 `01-召回端*/召回端/API.md`。
+<sub>更多细节见 <code>backend/API.md</code>。</sub>
 
 ---
 
-## 🛠️ 知识块管理（Chunk Manager）
+## 🛠️ 知识块管理
 
-内置可视化知识运维后台，支持一键将手册导入知识库：
+内置可视化知识运维后台，一键将手册导入知识库。
 
-- 管理页面：`http://127.0.0.1:3011/ragV6/chunk-manager/`
-- 支持格式：Markdown / TXT / DOCX / PDF
-- 流程：**解析标题树 → 提取图片锚点 → 生成父章节与检索块 → 质量预检 → 事务式发布（自动备份）→ 后台重建 BM25/FAISS → 热切换上线**
-- 失败自动保留旧索引服务，绝不把「文件已写入」误报为「索引已上线」
+- **管理页面**：`http://127.0.0.1:3011/ragV6/chunk-manager/`
+- **支持格式**：Markdown · TXT · DOCX · PDF
+- **流程**：解析标题树 → 提取图片锚点 → 生成父章节与检索块 → 质量预检 → 事务式发布（自动备份）→ 后台重建 BM25 / FAISS → 热切换上线
+- **可靠性**：重建失败自动保留旧索引服务，绝不把「文件已写入」误报为「索引已上线」
 
 ```bash
-# 命令行发布并重建索引
 python chunk_pipeline.py "待导入/智能咖啡机.md" \
   --manual "智能咖啡机手册" --publish --rebuild-index
 ```
 
-> 详见 `01-召回端*/召回端/CHUNK_MANAGER.md`。
+<sub>详见 <code>backend/CHUNK_MANAGER.md</code>。</sub>
 
 ---
 
 ## 📁 目录结构
 
-```
+```text
 Ray-Source/
-├── 01-召回端/召回端/            # Python · FastAPI 检索与生成服务
-│   ├── api_server.py            # 服务入口与路由（/chat /chat/stream /retrieve ...）
-│   ├── agent.py                 # 核心编排：分类路由、检索、证据选择、答案后处理
-│   ├── retrieval_engine.py      # 检索引擎：BM25 + FAISS + RRF + Rerank
-│   ├── product_router.py        # 产品路由（多产品 / 分句路由）
-│   ├── llm_router.py            # 大模型路由（回退 / 并发 / 流式）
-│   ├── multimodal_ingest.py     # 多模态图片处理
-│   ├── visual_image_index.py    # DINOv2 视觉相似度索引
-│   ├── evidence_selector.py     # 证据选择
+├── backend/                       # Python · FastAPI 检索与生成服务
+│   ├── api_server.py              # 服务入口与路由（/chat /chat/stream /retrieve ...）
+│   ├── agent.py                   # 核心编排：分类路由 · 检索 · 证据选择 · 答案后处理
+│   ├── retrieval_engine.py        # 检索引擎：BM25 + FAISS + RRF + Rerank
+│   ├── product_router.py          # 产品路由（多产品 / 分句路由）
+│   ├── llm_router.py              # 大模型路由（回退 / 并发 / 流式）
+│   ├── multimodal_ingest.py       # 多模态图片处理
+│   ├── visual_image_index.py      # DINOv2 视觉相似度索引
+│   ├── evidence_selector.py       # 证据选择
 │   ├── answer_evidence_alignment.py  # 答案-证据对齐校验
-│   ├── chunk_pipeline.py        # 知识块一键切分管道
-│   ├── chunk_admin_api.py       # 知识块管理 API
-│   └── API.md / CHUNK_MANAGER.md / 部署说明.md
+│   ├── chunk_pipeline.py          # 知识块一键切分管道
+│   └── API.md · CHUNK_MANAGER.md · 部署说明.md
 │
-├── 02-网页端/网页端/            # Node.js · 零依赖网关 + PWA + 管理后台
-│   ├── server.js                # HTTP 网关（代理 / 会话 / 缓存）
-│   ├── context-packet.js        # 上下文打包
-│   ├── channel-concurrency.js   # 并发通道管理
-│   ├── shared-state.js          # 共享状态
-│   ├── recommended-answer-cache.js
-│   ├── public/ragv6-ui/         # 主问答界面 + PWA
-│   ├── public/chunk-manager/    # 知识块管理界面
-│   └── MOBILE_APP.md / 部署说明.md
+├── web/                           # Node.js · 零依赖网关 + PWA + 管理后台
+│   ├── server.js                  # HTTP 网关（代理 / 会话 / 缓存）
+│   ├── context-packet.js          # 上下文打包
+│   ├── channel-concurrency.js     # 并发通道管理
+│   ├── shared-state.js            # 共享状态
+│   ├── public/ragv6-ui/           # 主问答界面 + PWA
+│   ├── public/chunk-manager/      # 知识块管理界面
+│   └── MOBILE_APP.md · 部署说明.md
 │
-├── docs/assets/                 # README 展示素材（截图 / 关键帧 / GIF）
-├── LICENSE                      # MIT
+├── docs/assets/                   # README 展示素材（截图 / 关键帧 / GIF）
+├── LICENSE                        # MIT
 └── README.md
 ```
 
-> ℹ️ 为保持仓库轻量，**手册图片（2600+）、FAISS/向量索引（`.npz`）、切分数据与数据库等大文件未纳入版本控制**（见 `.gitignore`）。可通过知识块管理管道重新生成。
+> ℹ️ 为保持仓库轻量，**手册图片（2600+）、FAISS / 向量索引（`.npz`）、切分数据与数据库等大文件未纳入版本控制**（见 `.gitignore`），可通过知识块管理管道重新生成。
 
 ---
 
 ## 🔒 安全说明
 
-- 仓库内不含任何真实密钥；`config_runtime.py` 与 `.env.example` 中均为占位符，请替换为你自己的 Provider Key。
-- `KAFU_API_TOKEN`（召回端）与 `RAGV6_API_TOKEN`（网页端）必须一致，且不要提交到公共仓库。
+- 仓库不含任何真实密钥；`config_runtime.py` 与 `.env.example` 均为占位符，请替换为你自己的 Provider Key。
+- `KAFU_API_TOKEN`（后端）与 `RAGV6_API_TOKEN`（前端）必须一致，且不要提交到公共仓库。
 - 公网部署务必启用 HTTPS。
 
 ---
@@ -295,27 +306,27 @@ Ray-Source/
 <div align="center">
 
 | 奖项 | 级别 |
-|---|---|
+| :---: | :---: |
 | 中国研究生电子设计大赛（GEDC） | **国家级一等奖** |
-| 企业专项奖 | **奖金 ¥40,000** |
+| 企业专项奖 | **奖金 ￥40,000** |
 
 </div>
 
 ---
 
+<div align="center">
+
 ## 👤 作者
 
-**Leo** ·  University of Electronic Science and Technology of China（电子科技大学）
+**Leo** &nbsp;·&nbsp; University of Electronic Science and Technology of China（电子科技大学）
 
-- GitHub: [@UAVLLMs](https://github.com/UAVLLMs)
-- Email: 202522280609@std.uestc.edu.cn
+[![GitHub](https://img.shields.io/badge/GitHub-UAVLLMs-181717?logo=github&logoColor=white)](https://github.com/UAVLLMs)
+[![Email](https://img.shields.io/badge/Email-202522280609@std.uestc.edu.cn-D14836?logo=gmail&logoColor=white)](mailto:202522280609@std.uestc.edu.cn)
 
-## 📄 许可证
+<br/>
 
 本项目基于 [MIT License](LICENSE) 开源。
 
----
-
-<div align="center">
 <sub>如果这个项目对你有帮助，欢迎点一个 ⭐ Star 支持！</sub>
+
 </div>
