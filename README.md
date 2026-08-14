@@ -113,27 +113,40 @@
 
 系统由两个**可独立部署**的部分组成，通过共享 Bearer Token 通信。
 
-```text
-┌────────────────────────────┐          ┌──────────────────────────────────────────────┐
-│         web (Node.js)      │  HTTPS   │                backend (Python / FastAPI)      │
-│  ────────────────────────  │  Bearer  │  ────────────────────────────────────────────  │
-│  · 零依赖 HTTP 网关          │ ───────► │  ① 意图分类（service / tech 二分类投票）         │
-│  · 会话 / 产品记忆           │  Token   │           │                                      │
-│  · 推荐答案缓存              │          │           ▼  有图 → 视觉预路由（识别产品 / 部件） │
-│  · SSE 流式转发             │          │  ② 产品路由（锁定手册检索范围）                    │
-│  · 知识块管理后台           │          │           │                                      │
-│  · PWA 可安装移动端         │ ◄─────── │           ▼                                      │
-│                            │   SSE    │  ③ 双路召回  BM25(jieba) ＋ FAISS(bge-m3)        │
-└────────────────────────────┘          │           │         ↓ RRF 融合                     │
-                                         │           ▼                                      │
-                                         │  ④ Reranker 精排（bge-reranker-v2-m3）→ 父章节   │
-                                         │           │                                      │
-                                         │           ▼                                      │
-                                         │  ⑤ 证据选择 → 答案-证据对齐校验（防幻觉）          │
-                                         │           │                                      │
-                                         │           ▼                                      │
-                                         │  ⑥ 生成答案 ＋ <PIC> 图片锚点 ＋ 多语言一致性守卫 │
-                                         └──────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    subgraph CLIENT["🖥️ web · Node.js 网关"]
+        direction TB
+        U["用户提问<br/>（可含图片 / 链接）"]
+        W["零依赖 HTTP 网关<br/>会话 · 产品记忆 · 缓存<br/>PWA 可安装移动端"]
+        U --> W
+    end
+
+    subgraph BACKEND["⚙️ backend · Python / FastAPI"]
+        direction TB
+        C["① 意图分类<br/>service / tech 二分类投票"]
+        V["② 视觉预路由<br/>识别产品 / 部件（有图时）"]
+        R["③ 产品路由<br/>锁定手册检索范围"]
+        S["④ 双路召回<br/>BM25 · jieba ＋ FAISS · bge-m3"]
+        F["⑤ RRF 融合 → Reranker 精排<br/>bge-reranker-v2-m3 → 父章节"]
+        E["⑥ 证据选择 → 答案-证据对齐<br/>强校验 · 防幻觉"]
+        G["⑦ 生成图文答案<br/>正文 ＋ &lt;PIC&gt; 图片锚点"]
+        C --> V --> R --> S --> F --> E --> G
+    end
+
+    W -->|"HTTPS · Bearer Token"| C
+    G -->|"SSE 流式回传"| W
+
+    KB[("📚 知识库<br/>40 类产品手册<br/>章节 · 图片 · 索引")]
+    KB -.检索.-> S
+    KB -.配图溯源.-> G
+
+    classDef client fill:#E8F4FD,stroke:#4A90D9,stroke-width:2px,color:#1B3A5B;
+    classDef backend fill:#E9F7F1,stroke:#2FA37A,stroke-width:2px,color:#12513A;
+    classDef store fill:#FFF4E0,stroke:#E0A020,stroke-width:2px,color:#6B4E10;
+    class U,W client;
+    class C,V,R,S,F,E,G backend;
+    class KB store;
 ```
 
 <div align="center">
