@@ -49,6 +49,8 @@
 
 > 🏆 本项目荣获 **中国研究生电子设计大赛（GEDC）国家级一等奖**，并获 **企业专项奖金 ￥40,000**。
 
+它适用于产品手册问答、售后排障、设备操作指引和内部知识库检索等场景；对于需要“回答可追溯、图文可对齐、检索过程可审计”的 RAG 应用尤其合适。
+
 <table>
 <tr>
 <td width="25%" align="center"><b>🛡️ 不编造</b><br/><sub>证据选择 + 答案对齐<br/>强校验抑制幻觉</sub></td>
@@ -114,47 +116,36 @@
 系统由两个**可独立部署**的部分组成，通过共享 Bearer Token 通信。
 
 ```mermaid
-flowchart TB
-    U(["👤 用户提问 · 可含图片 / 链接"])
+flowchart LR
+    A(["👤 接入层<br/>文本 · 图片 · 链接<br/>Web / PWA · 会话记忆"])
 
-    subgraph WEB["🖥️ &nbsp;web &nbsp;·&nbsp; Node.js 网关"]
+    subgraph CORE["⚙️ backend · Python / FastAPI"]
         direction LR
-        W["零依赖 HTTP 网关<br/><span>会话 · 产品记忆 · 缓存</span>"]
-        P["PWA 可安装移动端<br/><span>SSE 流式渲染</span>"]
+        R["① 理解与路由<br/>意图分类 · 视觉预路由<br/>产品范围锁定"]
+        H["② 检索与对齐<br/>BM25 ＋ FAISS ＋ RRF<br/>Reranker · 证据强校验"]
+        G["③ 可信图文生成<br/>正文 ＋ &lt;PIC&gt; 锚点<br/>引用溯源 · 审计轨迹"]
+        R ==> H ==> G
     end
 
-    subgraph BACKEND["⚙️ &nbsp;backend &nbsp;·&nbsp; Python / FastAPI &nbsp;· RAG 检索生成"]
-        direction TB
-        C["① 意图分类<br/><span>service / tech 二分类投票</span>"]
-        V["② 视觉预路由<br/><span>识别产品 / 部件（有图时）</span>"]
-        R["③ 产品路由<br/><span>锁定手册检索范围</span>"]
-        S["④ 双路召回<br/><span>BM25 · jieba ＋ FAISS · bge-m3</span>"]
-        F["⑤ RRF 融合 → Reranker 精排<br/><span>bge-reranker-v2-m3 → 父章节</span>"]
-        E["⑥ 证据选择 → 答案对齐<br/><span>强校验 · 防幻觉</span>"]
-        G["⑦ 生成图文答案<br/><span>正文 ＋ &lt;PIC&gt; 图片锚点</span>"]
-        C --> V --> R --> S --> F --> E --> G
-    end
+    O(["📡 输出层<br/>SSE 流式答案<br/>原文与配图引用"])
+    KB[("📚 产品知识库<br/>40 类手册<br/>章节 · 图片 · 索引")]
 
-    KB[("📚 知识库<br/><span>40 类产品手册 · 章节 · 图片 · 索引</span>")]
+    A == "HTTPS · Bearer Token" ==> R
+    G == "SSE" ==> O
+    KB -. "召回" .-> H
+    KB -. "原文 / 配图" .-> G
 
-    U ==> WEB
-    WEB == "HTTPS · Bearer Token" ==> C
-    G == "SSE 流式回传" ==> WEB
-    KB -. "检索" .-> S
-    KB -. "配图溯源" .-> G
+    classDef user fill:#5B5BD6,stroke:#4545B5,color:#FFFFFF,stroke-width:2px;
+    classDef rag fill:#EAFBF5,stroke:#10B981,color:#064E3B,stroke-width:2px;
+    classDef output fill:#F1EDFF,stroke:#8B5CF6,color:#4C1D95,stroke-width:2px;
+    classDef store fill:#FFF7E6,stroke:#F59E0B,color:#78350F,stroke-width:2px;
 
-    classDef user fill:#6C63FF,stroke:#4B44CC,stroke-width:0px,color:#ffffff,font-weight:bold;
-    classDef web fill:#EAF2FE,stroke:#3B82F6,stroke-width:1.5px,color:#1E3A5F;
-    classDef backend fill:#E7F8F1,stroke:#10B981,stroke-width:1.5px,color:#0B4A37;
-    classDef store fill:#FEF6E7,stroke:#F59E0B,stroke-width:1.5px,color:#7A4E0A;
-
-    class U user;
-    class W,P web;
-    class C,V,R,S,F,E,G backend;
+    class A user;
+    class R,H,G rag;
+    class O output;
     class KB store;
 
-    style WEB fill:#F5F9FF,stroke:#93C5FD,stroke-width:1.5px,color:#1E3A5F
-    style BACKEND fill:#F1FCF8,stroke:#6EE7B7,stroke-width:1.5px,color:#0B4A37
+    style CORE fill:#F4FCF8,stroke:#6EE7B7,stroke-width:2px,color:#064E3B
 ```
 
 <div align="center">
@@ -195,6 +186,15 @@ flowchart TB
 ## 🚀 快速开始
 
 > 请先启动 `backend`（召回端），再启动 `web`（网页端）。
+
+### 运行前提
+
+| 依赖 | 建议版本 | 用途 |
+| :--- | :--- | :--- |
+| Python | 3.11+ | FastAPI 后端与检索管道 |
+| Node.js | 18+ | Web 网关、PWA 与管理界面 |
+| 生成 / Embedding / Rerank Provider | OpenAI 兼容端点 | 模型调用与向量检索 |
+| Redis | 可选 | 多实例共享缓存与并发协调 |
 
 ### 1 · 启动后端 `backend`
 
